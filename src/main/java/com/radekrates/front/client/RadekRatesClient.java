@@ -6,6 +6,7 @@ import com.radekrates.front.domain.transaction.TransactionToProcessDto;
 import com.radekrates.front.domain.user.DataRelatedToUser;
 import com.radekrates.front.domain.user.UserDto;
 import com.radekrates.front.domain.user.UserLogInDto;
+import com.radekrates.front.domain.user.ValidatedUser;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +20,46 @@ import static java.util.Optional.ofNullable;
 @Component
 @Slf4j
 public class RadekRatesClient {
-    @Autowired
     private RestTemplate restTemplate;
+    private HttpHeaders headers;
+    private JSONObject jsonObject;
+
+    @Autowired
+    public RadekRatesClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public DataRelatedToUser getDataRelatedToUser(UserLogInDto userLogInDto) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject jsonObject = new JSONObject();
+            prepareTransfer();
             jsonObject.put("userEmail", userLogInDto.getUserEmail());
             jsonObject.put("password", userLogInDto.getPassword());
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
             return ofNullable( restTemplate.postForObject(getUserDataURL(), request, DataRelatedToUser.class))
                     .orElseThrow(RuntimeException::new);
         } catch (RestClientException e) {
-            log.error(e.getMessage(), e);
+            log.info(e.getMessage(), e);
             return new DataRelatedToUser();
+        }
+    }
+
+    public ValidatedUser getUserValidation(UserLogInDto userLogInDto) {
+        try {
+            prepareTransfer();
+            jsonObject.put("userEmail", userLogInDto.getUserEmail());
+            jsonObject.put("password", userLogInDto.getPassword());
+            HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
+            return ofNullable( restTemplate.postForObject(getUserValidationURL(), request, ValidatedUser.class))
+                    .orElseThrow(RuntimeException::new);
+        } catch (RestClientException e) {
+            log.info(e.getMessage(), e);
+            return new ValidatedUser();
         }
     }
 
     public void saveIban(IbanDto ibanDto) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject jsonObject = new JSONObject();
+            prepareTransfer();
             jsonObject.put("bankName", ibanDto.getBankName());
             jsonObject.put("bankLocalisation", ibanDto.getBankLocalisation());
             jsonObject.put("countryCode", ibanDto.getCountryCode());
@@ -51,29 +68,25 @@ public class RadekRatesClient {
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
             restTemplate.postForObject(getSaveIbanURL(), request, Void.class);
         } catch (RestClientException e) {
-            log.error(e.getMessage(), e);
+            log.info(e.getMessage(), e);
         }
     }
 
     public void saveIbanToUser(IbanToUserDto ibanToUserDto) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject jsonObject = new JSONObject();
+            prepareTransfer();
             jsonObject.put("userEmail", ibanToUserDto.getUserEmail());
             jsonObject.put("iban", ibanToUserDto.getIban());
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
             restTemplate.postForObject(getSaveIbanToUserURL(), request, Void.class);
         } catch (RestClientException e) {
-            log.error(e.getMessage(), e);
+            log.info(e.getMessage(), e);
         }
     }
 
     public void saveTransaction(TransactionToProcessDto transaction) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject jsonObject = new JSONObject();
+            prepareTransfer();
             jsonObject.put("userEmail", transaction.getUserEmail());
             jsonObject.put("inputIbanNumber", transaction.getInputIbanNumber());
             jsonObject.put("outputIbanNumber", transaction.getOutputIbanNumber());
@@ -82,15 +95,13 @@ public class RadekRatesClient {
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
             restTemplate.postForObject(getSaveTransactionURL(), request, Void.class);
         } catch (RestClientException e) {
-            log.error(e.getMessage(), e);
+            log.info(e.getMessage(), e);
         }
     }
 
     public void saveUser(UserDto userDto) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            JSONObject jsonObject = new JSONObject();
+            prepareTransfer();
             jsonObject.put("email", userDto.getEmail());
             jsonObject.put("password", userDto.getPassword());
             jsonObject.put("userFirstName", userDto.getUserFirstName());
@@ -102,12 +113,22 @@ public class RadekRatesClient {
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
             restTemplate.postForObject(getSaveUserURL(), request, Void.class);
         } catch (RestClientException e) {
-            log.error(e.getMessage(), e);
+            log.info(e.getMessage(), e);
         }
+    }
+
+    private void prepareTransfer() {
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        jsonObject = new JSONObject();
     }
 
     private String getUserDataURL() {
         return "http://localhost:8080/v1/user/getDataRelatedToUser";
+    }
+
+    private String getUserValidationURL() {
+        return "http://localhost:8080/v1/user/validateUser";
     }
 
     private String getSaveIbanURL() {
