@@ -10,6 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IbanDto {
+    @JsonProperty("id")
+    private String id;
     @JsonProperty("bankName")
     private String bankName;
     @JsonProperty("bankLocalisation")

@@ -1,10 +1,7 @@
 package com.radekrates.front.service;
 
 import com.radekrates.front.client.RadekRatesClient;
-import com.radekrates.front.domain.iban.Iban;
-import com.radekrates.front.domain.iban.IbanDto;
-import com.radekrates.front.domain.iban.IbanFormDto;
-import com.radekrates.front.domain.iban.IbanToUserDto;
+import com.radekrates.front.domain.iban.*;
 import com.radekrates.front.domain.transaction.Transaction;
 import com.radekrates.front.domain.transaction.TransactionDto;
 import com.radekrates.front.domain.transaction.TransactionFormDto;
@@ -22,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class DataTransfer {
-
     private RadekRatesClient radekRatesClient;
 
     @Autowired
@@ -48,17 +44,20 @@ public class DataTransfer {
         List<IbanDto> ibanDtos = radekRatesClient.getDataRelatedToUser(userLogInDto).getIbans();
         if (flag.equals("ibanNumber")) {
             return ibanDtos.stream()
-                    .map(t -> new Iban(t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(), t.getIbanNumber()))
+                    .map(t -> new Iban(t.getId(), t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(),
+                            t.getIbanNumber()))
                     .filter(t -> t.getIbanNumber().contains(query))
                     .collect(Collectors.toList());
         } else if (flag.equals("currencyCode")){
             return ibanDtos.stream()
-                    .map(t -> new Iban(t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(), t.getIbanNumber()))
+                    .map(t -> new Iban(t.getId(), t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(),
+                            t.getIbanNumber()))
                     .filter(t -> t.getCurrencyCode().contains(query))
                     .collect(Collectors.toList());
         } else {
             return ibanDtos.stream()
-                    .map(t -> new Iban(t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(), t.getIbanNumber()))
+                    .map(t -> new Iban(t.getId(), t.getBankName(), t.getBankLocalisation(), t.getCurrencyCode(),
+                            t.getIbanNumber()))
                     .collect(Collectors.toList());
         }
     }
@@ -90,7 +89,7 @@ public class DataTransfer {
     }
 
     public void saveIban(IbanFormDto ibanFormDto, String userEmail) {
-        IbanDto ibanDto = new IbanDto(ibanFormDto.getBankName(), ibanFormDto.getBankLocalisation(),
+        IbanToSaveDto ibanDto = new IbanToSaveDto(ibanFormDto.getBankName(), ibanFormDto.getBankLocalisation(),
                 ibanFormDto.getIbanNumber().substring(0, 2), ibanFormDto.getCurrencyCode().toString(),
                 ibanFormDto.getIbanNumber());
         radekRatesClient.saveIban(ibanDto);
@@ -113,5 +112,25 @@ public class DataTransfer {
                 userSignInFormDto.getUserFirstName(), userSignInFormDto.getUserLastName(),
                 Integer.parseInt(userSignInFormDto.getAge().toString().substring(4, 6)), userSignInFormDto.getCountry().toString(),
                 false, false));
+    }
+
+    public void updateIban(IbanToUpdateFormDto ibanToUpdateFormDto, String userEmail) {
+        System.out.println(ibanToUpdateFormDto.getBankNameUpdate());
+        System.out.println(ibanToUpdateFormDto.getBankLocalisationUpdate());
+        System.out.println(ibanToUpdateFormDto.getCurrencyCodeUpdate());
+        System.out.println(ibanToUpdateFormDto.getIbanNumberUpdate());
+        IbanToSaveDto ibanDto = new IbanToSaveDto(ibanToUpdateFormDto.getBankNameUpdate(), ibanToUpdateFormDto.getBankLocalisationUpdate(),
+                ibanToUpdateFormDto.getIbanNumberUpdate().substring(5, 7), ibanToUpdateFormDto.getCurrencyCodeUpdate().toString(),
+                ibanToUpdateFormDto.getIbanNumberUpdate().substring(5, 25));
+        radekRatesClient.updateIban(ibanDto);
+    }
+
+    public void deleteIbanById(IbanToDeleteFormDto ibanToDeleteFormDto, UserLogInDto userLogInDto) {
+        String wantedIbanNumber = ibanToDeleteFormDto.getIbanNumber().substring(5, 25);
+        List<Iban> ibans = getIbans(userLogInDto, "", null);
+        List<Iban> ibanToDelete = ibans.stream()
+                .filter(t -> t.getIbanNumber().equals(wantedIbanNumber))
+                .collect(Collectors.toList());
+        radekRatesClient.deleteIban(ibanToDelete.get(0).getId());
     }
 }

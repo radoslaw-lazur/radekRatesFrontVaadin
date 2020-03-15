@@ -15,7 +15,6 @@ import com.vaadin.flow.data.binder.Binder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class IbanForm extends FormLayout {
-
     private TextField bankName = new TextField("Bank Name");
     private TextField bankLocalisation = new TextField("Bank Localisation");
     private ComboBox<CurrencyType> currencyCode = new ComboBox<>("Currency Type");

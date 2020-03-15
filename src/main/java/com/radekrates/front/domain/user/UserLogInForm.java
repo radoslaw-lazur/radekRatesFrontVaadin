@@ -8,7 +8,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.data.binder.Binder;
@@ -18,19 +17,22 @@ public class UserLogInForm extends FormLayout {
     private EmailField userEmail = new EmailField("E-mail");
     private PasswordField password = new PasswordField("Password");
     private Button logInButton = new Button("Log in");
+    private Button returnToSignIn = new Button("Return");
+    private Label info = new Label("Log in if activated! If not, check the Email inbox");
     private Binder<UserLogInDto> binder = new Binder<>(UserLogInDto.class);
     private Image logo = new Image();
 
     public UserLogInForm(@Autowired DataTransfer dataTransfer) {
-        logo.setSrc("https://zapodaj.net/images/9700ac87f542a.jpg");
-        HorizontalLayout buttons = new HorizontalLayout(logInButton);
-        HorizontalLayout images = new HorizontalLayout(logo);
+        logo.setSrc("https://zapodaj.net/images/d291b05e536d8.jpg");
         logInButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(images, new Label(), userEmail, password, buttons);
+        returnToSignIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        add(logo, new Label(), userEmail, new Label(), password, new Label(), logInButton, new Label(),
+                returnToSignIn, new Label(), info);
         binder.bindInstanceFields(this);
         UserLogInDto userLogInDto = new UserLogInDto(userEmail.getValue(), password.getValue());
         binder.setBean(userLogInDto);
         logInButton.addClickListener(event -> process(dataTransfer, userLogInDto));
+        returnToSignIn.addClickListener(event -> UI.getCurrent().navigate(""));
     }
 
     private void process(DataTransfer dataTransfer, UserLogInDto userLogInDto) {
