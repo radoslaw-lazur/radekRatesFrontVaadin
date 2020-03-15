@@ -1,6 +1,6 @@
 package com.radekrates.front.client;
 
-import com.radekrates.front.domain.iban.IbanDto;
+import com.radekrates.front.domain.iban.IbanToSaveDto;
 import com.radekrates.front.domain.iban.IbanToUserDto;
 import com.radekrates.front.domain.transaction.TransactionToProcessDto;
 import com.radekrates.front.domain.user.DataRelatedToUser;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
 import static java.util.Optional.ofNullable;
 
 @Component
@@ -57,7 +58,7 @@ public class RadekRatesClient {
         }
     }
 
-    public void saveIban(IbanDto ibanDto) {
+    public void saveIban(IbanToSaveDto ibanDto) {
         try {
             prepareTransfer();
             jsonObject.put("bankName", ibanDto.getBankName());
@@ -117,6 +118,29 @@ public class RadekRatesClient {
         }
     }
 
+    public void deleteIban(String ibanId) {
+        try {
+            restTemplate.delete(getDeleteIbanByIdURL(ibanId));
+        } catch (RestClientException e) {
+            log.info(e.getMessage(), e);
+        }
+    }
+
+    public void updateIban(IbanToSaveDto ibanDto) {
+        try {
+            prepareTransfer();
+            jsonObject.put("bankName", ibanDto.getBankName());
+            jsonObject.put("bankLocalisation", ibanDto.getBankLocalisation());
+            jsonObject.put("countryCode", ibanDto.getCountryCode());
+            jsonObject.put("currencyCode", ibanDto.getCurrencyCode());
+            jsonObject.put("ibanNumber", ibanDto.getIbanNumber());
+            HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
+            restTemplate.put(getUpdateIbanURL(), request, Void.class);
+        } catch (RestClientException e) {
+            log.info(e.getMessage(), e);
+        }
+    }
+
     private void prepareTransfer() {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -145,5 +169,13 @@ public class RadekRatesClient {
 
     private String getSaveUserURL() {
         return "http://localhost:8080/v1/user/saveUser";
+    }
+
+    private String getDeleteIbanByIdURL(String ibanId) {
+        return "http://localhost:8080/v1/iban/deleteIban?ibanId=" + ibanId;
+    }
+
+    private String getUpdateIbanURL() {
+        return "http://localhost:8080/v1/iban/updateIban";
     }
 }

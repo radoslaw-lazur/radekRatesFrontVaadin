@@ -1,28 +1,19 @@
 package com.radekrates.front.domain.iban;
 
-import java.util.Objects;
-
-public class Iban {
-    private String id;
+public class IbanToSaveDto {
     private String bankName;
     private String bankLocalisation;
+    private String countryCode;
     private String currencyCode;
     private String ibanNumber;
 
-    public Iban(String id, String bankName, String bankLocalisation, String currencyCode, String ibanNumber) {
-        this.id = id;
+    public IbanToSaveDto(String bankName, String bankLocalisation, String countryCode,
+                         String currencyCode, String ibanNumber) {
         this.bankName = bankName;
         this.bankLocalisation = bankLocalisation;
+        this.countryCode = countryCode;
         this.currencyCode = currencyCode;
         this.ibanNumber = ibanNumber;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getBankName() {
@@ -41,6 +32,14 @@ public class Iban {
         this.bankLocalisation = bankLocalisation;
     }
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
+    }
+
     public String getCurrencyCode() {
         return currencyCode;
     }
@@ -55,22 +54,5 @@ public class Iban {
 
     public void setIbanNumber(String ibanNumber) {
         this.ibanNumber = ibanNumber;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Iban iban = (Iban) o;
-        return Objects.equals(id, iban.id) &&
-                Objects.equals(bankName, iban.bankName) &&
-                Objects.equals(bankLocalisation, iban.bankLocalisation) &&
-                Objects.equals(currencyCode, iban.currencyCode) &&
-                Objects.equals(ibanNumber, iban.ibanNumber);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, bankName, bankLocalisation, currencyCode, ibanNumber);
     }
 }
