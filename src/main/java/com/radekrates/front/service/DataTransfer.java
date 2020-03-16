@@ -6,10 +6,7 @@ import com.radekrates.front.domain.transaction.Transaction;
 import com.radekrates.front.domain.transaction.TransactionDto;
 import com.radekrates.front.domain.transaction.TransactionFormDto;
 import com.radekrates.front.domain.transaction.TransactionToProcessDto;
-import com.radekrates.front.domain.user.UserDto;
-import com.radekrates.front.domain.user.UserLogInDto;
-import com.radekrates.front.domain.user.UserSignInFormDto;
-import com.radekrates.front.domain.user.ValidatedUser;
+import com.radekrates.front.domain.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,10 +112,7 @@ public class DataTransfer {
     }
 
     public void updateIban(IbanToUpdateFormDto ibanToUpdateFormDto, String userEmail) {
-        System.out.println(ibanToUpdateFormDto.getBankNameUpdate());
-        System.out.println(ibanToUpdateFormDto.getBankLocalisationUpdate());
-        System.out.println(ibanToUpdateFormDto.getCurrencyCodeUpdate());
-        System.out.println(ibanToUpdateFormDto.getIbanNumberUpdate());
+
         IbanToSaveDto ibanDto = new IbanToSaveDto(ibanToUpdateFormDto.getBankNameUpdate(), ibanToUpdateFormDto.getBankLocalisationUpdate(),
                 ibanToUpdateFormDto.getIbanNumberUpdate().substring(5, 7), ibanToUpdateFormDto.getCurrencyCodeUpdate().toString(),
                 ibanToUpdateFormDto.getIbanNumberUpdate().substring(5, 25));
@@ -132,5 +126,9 @@ public class DataTransfer {
                 .filter(t -> t.getIbanNumber().equals(wantedIbanNumber))
                 .collect(Collectors.toList());
         radekRatesClient.deleteIban(ibanToDelete.get(0).getId());
+    }
+
+    public void remindPassword(UserForgottenPasswordFormDto userForgottenPasswordFormDto) {
+        radekRatesClient.remindPassword(userForgottenPasswordFormDto.getUserEmail());
     }
 }

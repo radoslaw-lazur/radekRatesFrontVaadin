@@ -18,6 +18,7 @@ public class UserLogInForm extends FormLayout {
     private PasswordField password = new PasswordField("Password");
     private Button logInButton = new Button("Log in");
     private Button returnToSignIn = new Button("Return");
+    private Button forgottenPassword = new Button("Forgot password?");
     private Label info = new Label("Log in if activated! If not, check the Email inbox");
     private Binder<UserLogInDto> binder = new Binder<>(UserLogInDto.class);
     private Image logo = new Image();
@@ -26,13 +27,15 @@ public class UserLogInForm extends FormLayout {
         logo.setSrc("https://zapodaj.net/images/d291b05e536d8.jpg");
         logInButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         returnToSignIn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        forgottenPassword.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         add(logo, new Label(), userEmail, new Label(), password, new Label(), logInButton, new Label(),
-                returnToSignIn, new Label(), info);
+                returnToSignIn, new Label(), info, new Label(), forgottenPassword);
         binder.bindInstanceFields(this);
         UserLogInDto userLogInDto = new UserLogInDto(userEmail.getValue(), password.getValue());
         binder.setBean(userLogInDto);
         logInButton.addClickListener(event -> process(dataTransfer, userLogInDto));
         returnToSignIn.addClickListener(event -> UI.getCurrent().navigate(""));
+        forgottenPassword.addClickListener(event -> UI.getCurrent().navigate("getPassword"));
     }
 
     private void process(DataTransfer dataTransfer, UserLogInDto userLogInDto) {
