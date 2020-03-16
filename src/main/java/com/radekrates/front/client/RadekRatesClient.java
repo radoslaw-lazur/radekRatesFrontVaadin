@@ -118,6 +118,17 @@ public class RadekRatesClient {
         }
     }
 
+    public void remindPassword(String userEmail) {
+        try {
+            prepareTransfer();
+            jsonObject.put("userEmail", userEmail);
+            HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
+            restTemplate.postForObject(getPasswordReminderURL(), request, Void.class);
+        } catch (RestClientException e) {
+            log.info(e.getMessage(), e);
+        }
+    }
+
     public void deleteIban(String ibanId) {
         try {
             restTemplate.delete(getDeleteIbanByIdURL(ibanId));
@@ -177,5 +188,9 @@ public class RadekRatesClient {
 
     private String getUpdateIbanURL() {
         return "http://localhost:8080/v1/iban/updateIban";
+    }
+
+    private String getPasswordReminderURL() {
+        return "http://localhost:8080/v1/user/remindPassword";
     }
 }

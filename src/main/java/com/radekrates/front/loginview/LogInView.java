@@ -14,6 +14,5 @@ public class LogInView extends VerticalLayout {
         add(userLogInForm);
         this.setSizeFull();
         this.setHorizontalComponentAlignment(Alignment.CENTER, userLogInForm);
-
     }
 }
