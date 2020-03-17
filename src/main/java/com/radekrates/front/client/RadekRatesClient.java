@@ -191,6 +191,6 @@ public class RadekRatesClient {
     }
 
     private String getPasswordReminderURL() {
-        return "http://localhost:8080/v1/user/remindPassword";
+        return "http://localhost:8080/v1/password";
     }
 }
