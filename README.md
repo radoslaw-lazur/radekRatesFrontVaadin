@@ -9,7 +9,7 @@
 **This is the frontend side of the application**  
 *To check out the backend side of the application click the link shown below:*  
 
-[Radek Rates App Backend](https://github.com/radoslaw-lazur/radekRatesBack)  
+[RadekRates App Backend](https://github.com/radoslaw-lazur/radekRatesBack)  
   
 ## Description
 
