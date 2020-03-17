@@ -159,35 +159,35 @@ public class RadekRatesClient {
     }
 
     private String getUserDataURL() {
-        return "http://localhost:8080/v1/user/getDataRelatedToUser";
+        return "http://localhost:8080/v1/dataUser";
     }
 
     private String getUserValidationURL() {
-        return "http://localhost:8080/v1/user/validateUser";
+        return "http://localhost:8080/v1/validate";
     }
 
     private String getSaveIbanURL() {
-        return "http://localhost:8080/v1/iban/saveIban";
+        return "http://localhost:8080/v1/ibans";
     }
 
     private String getSaveIbanToUserURL() {
-        return "http://localhost:8080/v1/iban/saveIbanToUser";
-    }
-
-    private String getSaveTransactionURL() {
-        return "http://localhost:8080/v1/transaction/saveTransactionFromFactory";
-    }
-
-    private String getSaveUserURL() {
-        return "http://localhost:8080/v1/user/saveUser";
-    }
-
-    private String getDeleteIbanByIdURL(String ibanId) {
-        return "http://localhost:8080/v1/iban/deleteIban?ibanId=" + ibanId;
+        return "http://localhost:8080/v1/ibanToUser";
     }
 
     private String getUpdateIbanURL() {
-        return "http://localhost:8080/v1/iban/updateIban";
+        return "http://localhost:8080/v1/ibans";
+    }
+
+    private String getSaveTransactionURL() {
+        return "http://localhost:8080/v1/transactions";
+    }
+
+    private String getSaveUserURL() {
+        return "http://localhost:8080/v1/users";
+    }
+
+    private String getDeleteIbanByIdURL(String ibanId) {
+        return "http://localhost:8080/v1/ibans/" + ibanId;
     }
 
     private String getPasswordReminderURL() {
