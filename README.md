@@ -57,3 +57,4 @@ I invite you to see the backend side of this app here:
 [Radek Rates App Backend](https://github.com/radoslaw-lazur/radekRatesBack)  
 
 If you have any questions please do not hesitate to ask: radoslaw.lazur@gmail.com
+
